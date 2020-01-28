@@ -28,7 +28,6 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/time.hpp"
-#include "rclcpp/clock.hpp"
 #include "rclcpp/node_interfaces/node_logging.hpp"
 #include "rclcpp/node_options.hpp"
 
@@ -72,7 +71,6 @@ private:
   std::shared_ptr<rclcpp::Client<lifecycle_msgs::srv::ChangeState>> client_change_state_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Empty>::SharedPtr update_pub_;
   rclcpp_lifecycle::LifecyclePublisher<mocap4ros_msgs::msg::Markers>::SharedPtr marker_pub_;
-  rclcpp_lifecycle::LifecyclePublisher<rclcpp::Clock>::SharedPtr clock_time_pub_;
   rclcpp::Time now_time;
   std::string stream_mode_;
   std::string host_name_;

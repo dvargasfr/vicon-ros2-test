@@ -28,25 +28,7 @@ using std::stringstream;
 ParametersTest::ParametersTest(const rclcpp::NodeOptions node_options)
   : rclcpp_lifecycle::LifecycleNode("param_test_node", node_options)
 {
-  // node_options.automatically_declare_parameters_from_overrides(true);
-  // node_options.allow_undeclared_parameters(true);
-  stream_mode_ = "ClientPull";
-  host_name_ = "192.168.10.1:801";
-  publish_markers_ = true;
-  marker_data_enabled = false;
-  unlabeled_marker_data_enabled = false;
-  lastFrameNumber = 0;
-  frameCount = 0;
-  droppedFrameCount = 0;
-  n_markers = 0;
-  n_unlabeled_markers = 0;
 
-  client_change_state_ = this->create_client<lifecycle_msgs::srv::ChangeState>(
-      "/vicon2_driver/change_state");
-  update_pub_ = create_publisher<std_msgs::msg::Empty>("/vicon2_driver/update_notify",
-    rclcpp::QoS(100));
-
-    initParameters();
 }
 
 using CallbackReturnT =
@@ -73,7 +55,13 @@ ParametersTest::on_configure(const rclcpp_lifecycle::State & state)
 
   /*...*/
   marker_pub_ = create_publisher<mocap4ros_msgs::msg::Markers>("/test/markers", 100);
-  clock_time_pub_ = create_publisher<rclcpp::Clock>("/clock", 10);
+
+  client_change_state_ = this->create_client<lifecycle_msgs::srv::ChangeState>(
+      "/vicon2_driver/change_state");
+  update_pub_ = create_publisher<std_msgs::msg::Empty>("/vicon2_driver/update_notify",
+    rclcpp::QoS(100));
+
+  initParameters();
 
   RCLCPP_INFO(get_logger(), "Configured!\n");
 
@@ -87,7 +75,6 @@ ParametersTest::on_activate(const rclcpp_lifecycle::State & state)
   RCLCPP_INFO(get_logger(), "State label [%s]", get_current_state().label().c_str());
   update_pub_->on_activate();
   marker_pub_->on_activate();
-  clock_time_pub_->on_activate();
   startPublishing();
   RCLCPP_INFO(get_logger(), "Activated!\n");
 

@@ -18,6 +18,7 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(mocap4ros_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 set(dependencies
     ament_index_cpp
@@ -28,29 +29,29 @@ set(dependencies
     mocap4ros_msgs
 )
 
-include_directories(include)
-
-add_library(${PROJECT_NAME} SHARED 
-  src/parameters_test.cpp
+include_directories(
+  include
+  ${rclcpp_lifecycle_INCLUDE_DIRS}
 )
-ament_target_dependencies(${PROJECT_NAME} ${dependencies})
-
-rclcpp_components_register_nodes(${PROJECT_NAME} "ParametersTest")
 
 add_executable(parameters_test_main
+  src/parameters_test.cpp
   src/parameters_test_main.cpp
 )
 ament_target_dependencies(parameters_test_main ${dependencies})
-target_link_libraries(parameters_test_main ${PROJECT_NAME})
+target_link_libraries(
+  parameters_test_main 
+  # ${PROJECT_NAME}
+)
 
 add_executable(parameters_test_listener
   src/parameters_test_listener.cpp
 )
 ament_target_dependencies(parameters_test_listener ${dependencies})
-target_link_libraries(parameters_test_listener ${PROJECT_NAME})
-
-
-ament_target_dependencies(parameters_test ${dependencies})
+target_link_libraries(
+  parameters_test_listener 
+  # ${PROJECT_NAME}
+)
 
 install(DIRECTORY include/
   DESTINATION include/
@@ -63,7 +64,7 @@ install(DIRECTORY
 )
 
 install(TARGETS
-  ${PROJECT_NAME}
+  # ${PROJECT_NAME}
   parameters_test_main
   parameters_test_listener
   ARCHIVE DESTINATION lib
@@ -76,7 +77,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_export_include_directories(include)
-ament_export_libraries(${PROJECT_NAME})
+ament_export_include_directories(include ${rclcpp_lifecycle_INCLUDE_DIRS} ${lifecycle_msgs_INCLUDE_DIRS})
+ament_export_libraries(${PROJECT_NAME} ${rclcpp_lifecycle_LIBRARIES})
 ament_export_dependencies(${dependencies})
 ament_package()
