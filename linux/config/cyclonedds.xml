@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-model href="https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd" schematypens="http://www.w3.org/2001/XMLSchema" ?>
+<CycloneDDS>    
+    <Domain id="any">
+        <General>
+            <NetworkInterfaceAddress>wlp62s0</NetworkInterfaceAddress>
+            <!--AllowMulticast>default</AllowMulticast>
+            <MaxMessageSize>65500B</MaxMessageSize>
+            <FragmentSize>4000B</FragmentSize-->
+        </General>
+        <!--Internal>
+            <Watermarks>
+                <WhcHigh>500kB</WhcHigh>
+            </Watermarks>
+        </Internal>
+        <Tracing>
+            <Verbosity>config</Verbosity>
+            <OutputFile>stdout</OutputFile>
+        </Tracing-->
+    </Domain>
+</CycloneDDS>
