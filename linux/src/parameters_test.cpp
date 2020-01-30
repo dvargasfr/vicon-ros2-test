@@ -141,8 +141,9 @@ void ParametersTest::startPublishing() {
   while (rclcpp::ok()) {
     mocap4ros_msgs::msg::Markers markers_msg;
     rclcpp::Time now = this->now();
-    // rclcpp::Clock now_clock = this->get_clock()->now();
-    markers_msg.header.stamp = now;
+    rclcpp::Time now_clock = this->get_clock()->now();
+    RCLCPP_WARN(get_logger(), "now_clock: %f", now_clock);
+    markers_msg.header.stamp = now_clock;
     rclcpp::Time now2 = markers_msg.header.stamp;
     // RCLCPP_WARN(get_logger(), "[1] Publishing at %d %u\n", markers_msg.header.stamp.sec, markers_msg.header.stamp.nanosec);
     // RCLCPP_WARN(get_logger(), "[2] Publishing at %d %u\n", (float)now.seconds(), now.nanoseconds());

@@ -47,22 +47,38 @@ public:
         
         auto diff_s = now.seconds() - msg_time.seconds();
           
-        // RCLCPP_WARN(this->get_logger(), "Latency: %f seconds", diff_s);
+        // RCLCPP_WARN(this->get_logger(), "now - msg: %f - %f = %f seconds", now.nanoseconds(), msg_time.nanoseconds(), diff_s);
+        if (!initiated){
+          last_frame_ = msg->frame_number;
+          initiated = true;
+        }
         samples_++;
         latency_sum_ += diff_s;
         med_ = latency_sum_ / samples_;
-        RCLCPP_WARN(this->get_logger(), "latencia med: %f seconds", med_);
-        RCLCPP_WARN(this->get_logger(), "frame_number: %d", msg->frame_number);
-        RCLCPP_WARN(this->get_logger(), "tasa de perdida: %f", (samples_/msg->frame_number)*100.0);
+        if (last_frame_ + 1 != msg->frame_number && last_frame_ != msg->frame_number){
+          pkgs_lost_+= (msg->frame_number-last_frame_);
+          RCLCPP_INFO(this->get_logger(), "PKG LOST!! last: %d  ---  current: %d", last_frame_, msg->frame_number);
+          RCLCPP_INFO(this->get_logger(), "total lost: %d --- total received %d", pkgs_lost_, samples_);
+          RCLCPP_WARN(this->get_logger(), "PKG LOST!! last: %d  ---  current: %d", last_frame_, msg->frame_number);
+          RCLCPP_WARN(this->get_logger(), "total lost: %d --- total received %d", pkgs_lost_, samples_);
+        }
+        last_frame_ = msg->frame_number;
+        // RCLCPP_WARN(this->get_logger(), "latencia med: %f seconds", med_);
+        // RCLCPP_WARN(this->get_logger(), "frame_number: %d", msg->frame_number);
+        // RCLCPP_WARN(this->get_logger(), "tasa de perdida: %d / %d = %f", pkgs_lost_, samples_, (float)((float)pkgs_lost_/(float)samples_)*100.0);
+        // RCLCPP_WARN(this->get_logger(), "paquetes perdidos: %d", pkgs_lost_);
       };
-    test_sub_ = create_subscription<mocap4ros_msgs::msg::Markers>("/test/markers", 10, callback);
+    test_sub_ = create_subscription<mocap4ros_msgs::msg::Markers>("/vicon/markers", 1000, callback);
   }
 
-private:
-  rclcpp::Subscription<mocap4ros_msgs::msg::Markers>::SharedPtr test_sub_;
   float med_ = 0;
   float latency_sum_ = 0;
   int samples_ = 0;
+  uint last_frame_ = 0;
+  int pkgs_lost_ = 0;
+  bool initiated = false;
+private:
+  rclcpp::Subscription<mocap4ros_msgs::msg::Markers>::SharedPtr test_sub_;
 };
 
 int main(int argc, char * argv[])
@@ -70,6 +86,7 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   auto node_listener = std::make_shared<TestParamsListener>();
   rclcpp::spin(node_listener->get_node_base_interface());
+  RCLCPP_INFO(node_listener->get_logger(), "total lost: %d --- total received %d", node_listener->pkgs_lost_, node_listener->samples_);
   rclcpp::shutdown();
 
   return 0;
