@@ -1,6 +1,6 @@
 # vicon-ros2-test
 
-This repo is created as a fast prototype for testing a Vicon-ROS2 system. It main purpose is to analize several QoS features 
+This repo is created as a fast prototype for testing a Vicon-ROS2 system. Its main purpose is to analize several QoS features 
 working on diferent OS and with different DDS.
 
 ## Fast_RTPS
