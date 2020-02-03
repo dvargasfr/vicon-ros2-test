@@ -4,6 +4,8 @@ This repo is created as a fast prototype for testing a Vicon-ROS2 system. It is 
 
 Its main purpose is to analize several QoS features working on diferent OS and with different DDS.
 
+Find [https://github.com/ros2/ros2_documentation/blob/master/source/Installation/DDS-Implementations.rst#windows-source-install](here) how to install each DDS.
+
 ## Fast_RTPS
 
 - Linux: `export RMW_IMPLEMENTATION=rmw_fastrtps_cpp`
